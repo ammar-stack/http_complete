@@ -1,0 +1,52 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+    bool isName = false;  
+    String? namee = "";
+  againcallAPI() async{
+    String URL = "https://api.github.com/users/ammar-stack";
+    var data = Uri.parse(URL);
+    var response = await http.get(data);
+    if(response.statusCode==200){
+      var jsondecodee = jsonDecode(response.body);
+      setState(() {
+        isName = true;
+        namee = jsondecodee['name'];
+      });
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ),
+                onPressed: (){
+                  againcallAPI();
+                }, child:const Text("Press the Button",style: TextStyle(fontSize: 25,color:Colors.white),)),
+                const SizedBox(),
+                if(isName == false) const CircularProgressIndicator(),
+                if(isName == true) Text(namee.toString(),style:const TextStyle(fontSize: 25),)
+            ],
+          ),
+        ),
+      )
+    );
+  }
+}
